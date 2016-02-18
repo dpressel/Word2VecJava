@@ -1,15 +1,29 @@
-# Word2vecJava
+# Word2vecJava (Lite)
 
-[![Build Status](https://travis-ci.org/medallia/Word2VecJava.svg?branch=master)](https://travis-ci.org/medallia/Word2VecJava)
+This is a lightweight-oriented fork of the [Medallia implementation of Word2Vec in Java](https://github.com/medallia/Word2VecJava) with several aims in mind.  While the original base is fairly elegant, there were several things that made it impractical to use on larger corpora.
 
-This is a port of the open source C implementation of word2vec (https://code.google.com/p/word2vec/). You can browse/contribute the repository via [Github](https://github.com/medallia/Word2VecJava). Alternatively you can pull it from the central Maven repositories:
-```XML
-<dependency>
-  <groupId>com.medallia.word2vec</groupId>
-  <artifactId>Word2VecJava</artifactId>
-  <version>0.10.3</version>
-</dependency>
-```
+* Efficiency
+  * I removed a copy and data structure mod from Neural Net model to Word2VecModel.  This copy could be perilous with huge models, and the data structure in Word2VecModel was problematic for Java WRT large files, and all of this is easy to avoid by not copying
+    * Code now assumes that the model should never be copied (keep in mind, models will often be HUGE)
+  * Now uses floats, not doubles like the original Word2Vec code, which should mean bigger models and faster computations
+  * I removed the NormalizedWord2Vec model, and simply added a normalize() method on the base which is public.  This prevents a second copy that was happening when building a Searcher
+
+* Better Interop with Mikolov's original models/Code simplicity
+  * Use original code's file format for read and write, handle large files!
+    * There is an outstanding pull request from another developer since mid-year last year, that aimed to fix a problem with reading in large word2vec files from binary.  Without this, the code is broken, though it worked in earlier versions
+    * To get the ability to write Word2Vec binary files, upgrading to the broken binary loader was required as the raw data structures arent easily accessible to add ones own serialization
+  * Can now easily access raw underlying embedding matrix from user code
+  
+* Dependencies
+  * Removed Thrift and Joda deps from the project (all files read and written now in format compatible with Mikolov's code only).
+    * However, now that data structures are more accessible, should be easy to add a layer to do Thrift, or any other serialization layer without impacting the base
+
+* Caveats to this Fork
+
+ * For the time-being, GLoVe file support is gone, though I will look at adding this without any deps in the future -- very convenient functionality
+ * Tests still being reworked, as I need to do a bit more validation against the original
+
+# Notes from the orginal [code](https://github.com/medallia/Word2VecJava):
 
 For more background information about word2vec and neural network training for the vector representation of words, please see the following papers.
 * http://ttic.uchicago.edu/~haotang/speech/1301.3781.pdf
