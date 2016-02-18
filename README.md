@@ -18,6 +18,11 @@ This is a lightweight-oriented fork of the [Medallia implementation of Word2Vec 
   * Removed Thrift and Joda deps from the project (all files read and written now in format compatible with Mikolov's code only).
     * However, now that data structures are more accessible, should be easy to add a layer to do Thrift, or any other serialization layer without impacting the base
 
+* Project configuration and build unification
+  * For the time being, center the version number at where I forked, which means updating the POM to 0.10.3
+  * Also, since Gradle build was presumed to be more in-use, I downgraded Java requirement in POM back to 1.7 to match
+  * Also moved (for the time being) the example code into an exec sub-package.  Probably will drop this out eventually
+
 * Caveats to this Fork
 
  * For the time-being, GLoVe file support is gone, though I will look at adding this without any deps in the future -- very convenient functionality
