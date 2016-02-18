@@ -8,9 +8,6 @@ import com.google.common.collect.ImmutableSortedMultiset;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.Multisets;
-import word2vec.lite.util.AC;
-import word2vec.lite.util.ProfilingTimer;
-import org.apache.commons.logging.Log;
 import word2vec.lite.huffman.HuffmanCoding;
 import word2vec.lite.neuralnetwork.NeuralNetworkConfig;
 import word2vec.lite.neuralnetwork.NeuralNetworkTrainer;
@@ -62,34 +59,32 @@ class Word2VecTrainer {
 	}
 	
 	/** Train a model using the given data */
-	Word2VecModel train(Log log, Word2VecTrainerBuilder.TrainingProgressListener listener, Iterable<List<String>> sentences) throws InterruptedException {
-		try (ProfilingTimer timer = ProfilingTimer.createLoggingSubtasks(log, "Training word2vec")) {
+	Word2VecModel train(Word2VecTrainerBuilder.TrainingProgressListener listener, Iterable<List<String>> sentences) throws InterruptedException {
+
 			final Multiset<String> counts;
 			
-			try (AC ac = timer.start("Acquiring word frequencies")) {
+
 				listener.update(Word2VecTrainerBuilder.TrainingProgressListener.Stage.ACQUIRE_VOCAB, 0.0);
 				counts = (vocab.isPresent())
 							? vocab.get()
 							: count(Iterables.concat(sentences));
-			}
+
 			
 			final ImmutableMultiset<String> vocab;
-			try (AC ac = timer.start("Filtering and sorting vocabulary")) {
+
 				listener.update(Word2VecTrainerBuilder.TrainingProgressListener.Stage.FILTER_SORT_VOCAB, 0.0);
 				vocab = filterAndSort(counts);
-			}
+
 			
 			final Map<String, HuffmanCoding.HuffmanNode> huffmanNodes;
-			try (AC task = timer.start("Create Huffman encoding")) {
-				huffmanNodes = new HuffmanCoding(vocab, listener).encode();
-			}
+			huffmanNodes = new HuffmanCoding(vocab, listener).encode();
+
 			
 			final NeuralNetworkTrainer.NeuralNetworkModel model;
-			try (AC task = timer.start("Training model %s", neuralNetworkConfig)) {
-				model = neuralNetworkConfig.createTrainer(vocab, huffmanNodes, listener).train(sentences);
-			}
+			model = neuralNetworkConfig.createTrainer(vocab, huffmanNodes, listener).train(sentences);
+
 			
 			return new Word2VecModel(vocab.elementSet(), model.vectors());
 		}
 	}
-}
+

@@ -17,6 +17,7 @@ This is a lightweight-oriented fork of the [Medallia implementation of Word2Vec 
 * Dependencies
   * Removed Thrift and Joda deps from the project (all files read and written now in format compatible with Mikolov's code only).
     * However, now that data structures are more accessible, should be easy to add a layer to do Thrift, or any other serialization layer without impacting the base
+  * Removed Apache logging deps (and with it profiling code, callbacks provided should be sufficient for end-users if needed)
 
 * Project configuration and build unification
   * For the time being, center the version number at where I forked, which means updating the POM to 0.10.3

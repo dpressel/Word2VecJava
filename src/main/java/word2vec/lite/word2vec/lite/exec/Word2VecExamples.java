@@ -8,13 +8,10 @@ import word2vec.lite.Searcher.UnknownWordException;
 import word2vec.lite.Word2VecModel;
 import word2vec.lite.Word2VecTrainerBuilder;
 import word2vec.lite.neuralnetwork.NeuralNetworkType;
-import word2vec.lite.util.AutoLog;
 import word2vec.lite.util.Common;
 import word2vec.lite.util.Format;
-import word2vec.lite.util.ProfilingTimer;
 import word2vec.lite.util.Strings;
-import org.apache.commons.logging.Log;
-import org.apache.thrift.TException;
+
 
 import java.io.*;
 import java.nio.file.Files;
@@ -25,10 +22,9 @@ import java.util.List;
 // TODO: rework this to be more useful as standalone program
 /** Example usages of {@link Word2VecModel} */
 public class Word2VecExamples {
-	private static final Log LOG = AutoLog.getLog();
-	
+
 	/** Runs the example */
-	public static void main(String[] args) throws IOException, TException, UnknownWordException, InterruptedException {
+	public static void main(String[] args) throws IOException, UnknownWordException, InterruptedException {
 
 		if (args.length < 1)
 		{
@@ -45,7 +41,7 @@ public class Word2VecExamples {
 	 * Trains a model and allows user to find similar words
 	 * demo-word.sh example from the open source C implementation
 	 */
-	public static void demoWord(String inputFile, String outputFile) throws IOException, TException, InterruptedException, UnknownWordException {
+	public static void demoWord(String inputFile, String outputFile) throws IOException, InterruptedException, UnknownWordException {
 		File f = new File(inputFile);
 		if (!f.exists())
 	       	       throw new IllegalStateException("Please download and unzip the text8 example from http://mattmahoney.net/dc/text8.zip");
@@ -84,16 +80,14 @@ public class Word2VecExamples {
 	}
 	
 	/** Loads a model and allows user to find similar words */
-	public static void loadModel(String outputFile) throws IOException, TException, UnknownWordException {
+	public static void loadModel(String outputFile) throws IOException, UnknownWordException {
 		final Word2VecModel model;
-		try (ProfilingTimer timer = ProfilingTimer.create(LOG, "Reloading model")) {
-			model = Word2VecModel.fromBinFile(new File(outputFile));
-		}
+		model = Word2VecModel.fromBinFile(new File(outputFile));
 		interact(model.forSearch());
 	}
 	
 	/** Example using Skip-Gram model */
-	public static void skipGram() throws IOException, TException, InterruptedException, UnknownWordException {
+	public static void skipGram() throws IOException, InterruptedException, UnknownWordException {
 		List<String> read = Common.readToList(new File("sents.cleaned.word2vec.txt"));
 		List<List<String>> partitioned = Lists.transform(read, new Function<String, List<String>>() {
 			@Override
@@ -119,10 +113,7 @@ public class Word2VecExamples {
 				})
 				.train(partitioned);
 		
-		try (ProfilingTimer timer = ProfilingTimer.create(LOG, "Writing output to file")) {
-			model.toBinFile(new FileOutputStream("300layer.20threads.5iter.model"));
-
-		}
+		model.toBinFile(new FileOutputStream("300layer.20threads.5iter.model"));
 		
 		interact(model.forSearch());
 	}

@@ -4,8 +4,7 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Multiset;
-import word2vec.lite.util.AutoLog;
-import org.apache.commons.logging.Log;
+
 import word2vec.lite.neuralnetwork.NeuralNetworkConfig;
 import word2vec.lite.neuralnetwork.NeuralNetworkType;
 
@@ -62,8 +61,7 @@ import java.util.Map;
  * I ask you to reach out if it is not.
  */
 public class Word2VecTrainerBuilder {
-	private static final Log LOG = AutoLog.getLog();
-	
+
 	private Integer layerSize;
 	private Integer windowSize;
 	private Integer numThreads;
@@ -240,7 +238,7 @@ public class Word2VecTrainerBuilder {
 						initialLearningRate,
 						useHierarchicalSoftmax
 					)
-			).train(LOG, listener, sentences);
+			).train(listener, sentences);
 	}
 	
 	/** Listener for model training progress */
