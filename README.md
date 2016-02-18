@@ -23,7 +23,7 @@ This is a lightweight-oriented fork of the [Medallia implementation of Word2Vec 
  * For the time-being, GLoVe file support is gone, though I will look at adding this without any deps in the future -- very convenient functionality
  * Tests still being reworked, as I need to do a bit more validation against the original
 
-# Notes from the orginal [code](https://github.com/medallia/Word2VecJava):
+# Notes from the original Java [code](https://github.com/medallia/Word2VecJava):
 
 For more background information about word2vec and neural network training for the vector representation of words, please see the following papers.
 * http://ttic.uchicago.edu/~haotang/speech/1301.3781.pdf
